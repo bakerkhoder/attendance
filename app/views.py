@@ -102,3 +102,13 @@ def addFace(face_id):
     face_id = face_id
     faceRecognition.faceDetect(face_id)
     return redirect('/')
+
+
+@login_required(login_url='login')
+def ListAttendee(request):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+    attendees = Attendee.objects.all()
+    context = {'attendees': attendees}
+    return render(request, 'app/list_attendee.html', context)
