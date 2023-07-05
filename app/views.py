@@ -1,3 +1,4 @@
+from app.detection import FaceRecognition
 import os
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
@@ -25,7 +26,6 @@ from django.template.loader import render_to_string
 from django.contrib.auth.hashers import make_password
 
 sys.path.append('..')
-from app.detection import FaceRecognition
 
 faceRecognition = FaceRecognition()
 
@@ -37,7 +37,8 @@ def generate_random_string(length):
 
 
 def home(request):
-    trainers = Trainer.objects.annotate(total_students=Sum('classroom__max_capacity'))
+    trainers = Trainer.objects.annotate(
+        total_students=Sum('classroom__max_capacity'))
     classrooms = Classroom.objects.all()
 
     attendee_classrooms = None
@@ -47,7 +48,8 @@ def home(request):
     if request.user.is_authenticated and hasattr(request.user, 'trainer'):
         classrooms = request.user.trainer.classroom_set.all()
 
-    context = {'trainers': trainers, 'classrooms': classrooms, 'attendee_classrooms': attendee_classrooms}
+    context = {'trainers': trainers, 'classrooms': classrooms,
+               'attendee_classrooms': attendee_classrooms}
     return render(request, 'app/home.html', context)
 
 
@@ -125,8 +127,6 @@ def AddAttendeePage(request):
                                                      'attendee_form': attendee_form})
 
 
-
-
 @login_required(login_url='login')
 def AddAttendee(request):
     if not request.user.is_staff and not request.user.is_superuser:
@@ -184,7 +184,8 @@ def AddAttendee(request):
             user_password = str(request.POST['password1'])
             context_email = {'attendee': attendee, 'password': user_password}
             email_content = render_to_string(email_template, context_email)
-            email = EmailMessage(subject, email_content, from_email, [to_email])
+            email = EmailMessage(subject, email_content,
+                                 from_email, [to_email])
             email.content_subtype = 'html'
             email.attach_file(qr_code_path)
             # email.send()
@@ -213,7 +214,8 @@ def UpdateAttendee(request, pk):
     attendee = Attendee.objects.get(id=pk)
 
     if request.method == 'POST':
-        attendee_form = AttendeeForm1(request.POST, request.FILES, instance=attendee)
+        attendee_form = AttendeeForm1(
+            request.POST, request.FILES, instance=attendee)
         if attendee_form.is_valid():
             email = attendee_form.cleaned_data['email']
 
@@ -247,7 +249,8 @@ def DeleteAttendee(request, pk):
     context = {'attendee': attendee}
     return render(request, 'app/delete_attendee.html', context)
 
-    @login_required(login_url='login')
+
+@login_required(login_url='login')
 def EditAttendeeProfile(request):
     if not hasattr(request.user, 'attendee'):
         # if user is not student
@@ -256,7 +259,8 @@ def EditAttendeeProfile(request):
     attendee = Attendee.objects.get(id=request.user.attendee.id)
 
     if request.method == 'POST':
-        attendee_form = AttendeeForm2(request.POST, request.FILES, instance=attendee)
+        attendee_form = AttendeeForm2(
+            request.POST, request.FILES, instance=attendee)
 
         if attendee_form.is_valid():
             email = attendee_form.cleaned_data['email']
@@ -283,3 +287,89 @@ def EditAttendeeProfile(request):
 def OpenCameras(request):
     face_id = faceRecognition.recognizeFace()
     return redirect('home')
+
+
+def scan_qr_code(request):
+    users = User.objects.all()
+    video_capture = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+    # address = 'http://192.168.6.13:8080/video'
+    # video_capture.open(address)
+    error_sound_path = os.path.join(os.path.dirname(
+        __file__), 'sounds', 'error_sound.mp3')
+    success_sound_path = os.path.join(os.path.dirname(
+        __file__), 'sounds', 'success_sound.mp3')
+
+    while True:
+        ret, frame = video_capture.read()
+
+        if ret:
+            qr_code_data = decode_qr_code(frame)
+
+            if qr_code_data:
+                qr_code_data = qr_code_data.decode("utf-8")
+                for user in users:
+                    if qr_code_data == str(user.username):
+                        classroom = Classroom.objects.get(id=1)
+                        attendee = user.attendee
+
+                        # Check if the attendee belongs to the specified classroom
+                        if not attendee.classrooms.filter(id=classroom.id).exists():
+                            video_capture.release()
+                            cv2.destroyAllWindows()
+                            # Play error sounds
+                            playsound.playsound(error_sound_path)
+                            return render(request, 'app/invalid_qr_code.html')
+
+                        attendance = Attendance.objects.filter(
+                            classroom=classroom, attendee=attendee).first()
+
+                        if attendance:
+                            # Update existing attendance row
+                            if not attendance.is_present:
+                                attendance.is_present = True
+                                attendance.check_in_time = datetime.now()
+                                attendance.save()
+                                video_capture.release()
+                                cv2.destroyAllWindows()
+                                # Play success sounds
+                                playsound.playsound(success_sound_path)
+                                return redirect('attendance-success')
+                            else:
+                                video_capture.release()
+                                cv2.destroyAllWindows()
+                                # Play success sounds
+                                playsound.playsound(success_sound_path)
+                                return render(request, 'app/attendance_exists.html')
+                        else:
+                            attendance = Attendance.objects.create(
+                                classroom=classroom,
+                                attendee=attendee,
+                                is_present=True,
+                                check_in_time=datetime.now()
+                            )
+                            attendance.save()
+                            video_capture.release()
+                            cv2.destroyAllWindows()
+                            # Play success sounds
+                            playsound.playsound(success_sound_path)
+                            return redirect('attendance-success')
+
+                # Invalid QR code, handle the case here
+                video_capture.release()
+                cv2.destroyAllWindows()
+                playsound.playsound(error_sound_path)  # Play error sounds
+                return render(request, 'app/invalid_qr_code.html')
+
+            cv2.imshow('Scan QR Code', frame)
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+    video_capture.release()
+    cv2.destroyAllWindows()
+
+    return render(request, 'app/scan_qr_code.html')
+
+
+def attendance_success(request):
+    return render(request, 'app/attendance_success.html')
