@@ -277,3 +277,9 @@ def EditAttendeeProfile(request):
         'attendee_form': attendee_form
     }
     return render(request, 'app/update_attendee.html', context)
+
+
+@login_required(login_url='login')
+def OpenCameras(request):
+    face_id = faceRecognition.recognizeFace()
+    return redirect('home')
