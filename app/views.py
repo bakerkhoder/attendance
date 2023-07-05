@@ -423,3 +423,13 @@ def ListTrainerClassroom(request):
         'absent_count': absent_count
     }
     return render(request, 'app/list_attendance.html', context)
+
+
+def decode_qr_code(image):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    qr_codes = pyzbar.decode(gray)
+
+    if qr_codes:
+        return qr_codes[0].data
+
+    return None
