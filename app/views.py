@@ -246,3 +246,34 @@ def DeleteAttendee(request, pk):
         return redirect('list_attendee')
     context = {'attendee': attendee}
     return render(request, 'app/delete_attendee.html', context)
+
+    @login_required(login_url='login')
+def EditAttendeeProfile(request):
+    if not hasattr(request.user, 'attendee'):
+        # if user is not student
+        return HttpResponse(status=404)
+
+    attendee = Attendee.objects.get(id=request.user.attendee.id)
+
+    if request.method == 'POST':
+        attendee_form = AttendeeForm2(request.POST, request.FILES, instance=attendee)
+
+        if attendee_form.is_valid():
+            email = attendee_form.cleaned_data['email']
+
+            # Check if the email already exists for a user other than the current attendee
+            if User.objects.filter(Q(email=email) & ~Q(attendee__id=attendee.id)).exists():
+                messages.error(request, 'Email already exists!')
+                return redirect('edit_attendee_profile')
+
+            attendee.user.email = email  # Save email in the user object
+            attendee.user.save()
+            attendee_form.save()
+            return redirect('home')
+    else:
+        attendee_form = AttendeeForm2(instance=attendee)
+
+    context = {
+        'attendee_form': attendee_form
+    }
+    return render(request, 'app/update_attendee.html', context)
