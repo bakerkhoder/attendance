@@ -128,3 +128,22 @@ class FaceRecognition:
             cv2.destroyAllWindows()
         except:
             pass
+
+def trainFace(request):
+    path = BASE_DIR1 + '/app/dataset'
+    face_encodings = []
+    ids = []
+
+    for filename in os.listdir(path):
+        imagePath = os.path.join(path, filename)
+        face_image = face_recognition.load_image_file(imagePath)
+        face_encoding = face_recognition.face_encodings(face_image)
+        if len(face_encoding) > 0:
+            face_encodings.append(face_encoding[0])
+            face_id = int(os.path.splitext(filename)[0].split(".")[1])
+            ids.append(face_id)
+
+    data = {"encodings": face_encodings, "labels": ids}
+    with open("model.pickle", "wb") as file:
+        pickle.dump(data, file)
+    return render(request, 'app/home.html')
