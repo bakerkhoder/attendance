@@ -112,3 +112,14 @@ def ListAttendee(request):
     attendees = Attendee.objects.all()
     context = {'attendees': attendees}
     return render(request, 'app/list_attendee.html', context)
+
+
+@login_required(login_url='login')
+def AddAttendeePage(request):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+    user_form = UserRegistrationForm()
+    attendee_form = AttendeeForm()
+    return render(request, 'app/add_attendee.html', {'user_form': user_form,
+                                                     'attendee_form': attendee_form})
