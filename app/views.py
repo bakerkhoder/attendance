@@ -233,3 +233,16 @@ def UpdateAttendee(request, pk):
         'attendee_form': attendee_form
     }
     return render(request, 'app/update_attendee.html', context)
+
+
+@login_required(login_url='login')
+def DeleteAttendee(request, pk):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+    attendee = Attendee.objects.get(id=pk)
+    if request.method == 'POST':
+        attendee.delete()
+        return redirect('list_attendee')
+    context = {'attendee': attendee}
+    return render(request, 'app/delete_attendee.html', context)
