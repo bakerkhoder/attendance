@@ -202,3 +202,34 @@ def AddAttendee(request):
     }
 
     return render(request, 'app/add_attendee.html', context)
+
+
+@login_required(login_url='login')
+def UpdateAttendee(request, pk):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+
+    attendee = Attendee.objects.get(id=pk)
+
+    if request.method == 'POST':
+        attendee_form = AttendeeForm1(request.POST, request.FILES, instance=attendee)
+        if attendee_form.is_valid():
+            email = attendee_form.cleaned_data['email']
+
+            # Check if the email already exists for a user other than the current attendee
+            if User.objects.filter(Q(email=email) & ~Q(attendee__id=pk)).exists():
+                messages.error(request, 'Email already exists!')
+                return redirect('update_attendee', attendee.id)
+
+            attendee_form.save()
+            attendee.user.email = email
+            attendee.user.save()
+            return redirect('list_attendee')
+    else:
+        attendee_form = AttendeeForm1(instance=attendee)
+
+    context = {
+        'attendee_form': attendee_form
+    }
+    return render(request, 'app/update_attendee.html', context)
