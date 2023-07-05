@@ -375,7 +375,16 @@ def attendance_success(request):
     return render(request, 'app/attendance_success.html')
 
 
-    @login_required(login_url='login')
+def ListTrainer(request):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+    trainers = Trainer.objects.all()
+    context = {'trainers': trainers}
+    return render(request, 'app/list_trainer.html', context)
+
+
+@login_required(login_url='login')
 def ListTrainerClassroom(request):
     if not hasattr(request.user, 'trainer'):
         return HttpResponse(status=404)
