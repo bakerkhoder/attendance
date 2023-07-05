@@ -48,3 +48,83 @@ class FaceRecognition:
 
         cam.release()
         cv2.destroyAllWindows()
+
+
+     def recognizeFace(self):
+        try:
+            with open("model.pickle", "rb") as file:
+                data = pickle.load(file)
+                self.face_encodings = data["encodings"]
+                self.ids = data["labels"]
+
+            font = cv2.FONT_HERSHEY_SIMPLEX
+
+            cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+            # address = 'http://192.168.0.102:8080/video'
+            # cam.open(address)
+
+            device_id = 0  # Specify the GPU device ID to use
+            model_dir = r"C:\Users\Shahine\PycharmProjects\BestProject\attendance_V2\app\spoofing\resources\anti_spoof_models"  # Path to the anti-spoofing models
+
+            while True:
+                ret, img = cam.read()
+                rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+                faces = face_recognition.face_locations(rgb_img)
+                encodings = face_recognition.face_encodings(rgb_img, faces)
+
+                for face_encoding, face_location in zip(encodings, faces):
+                    top, right, bottom, left = face_location
+                    cv2.rectangle(img, (left, top), (right, bottom), (0, 255, 0), 2)
+
+                    # Perform anti-spoofing test
+                    is_fake = test(img, model_dir, device_id)
+
+                    if is_fake != 1:
+                        name = "Fake"  # Set the name to indicate that the face is fake
+                    else:
+                        matches = face_recognition.compare_faces(self.face_encodings, face_encoding)
+                        face_distances = face_recognition.face_distance(self.face_encodings, face_encoding)
+                        best_match_index = np.argmin(face_distances)
+
+                        if matches[best_match_index]:
+                            face_id = self.ids[best_match_index]
+                            attendee = get_object_or_404(Attendee, user=face_id)
+                            attendee_classrooms = attendee.classrooms.all()
+
+                            if not attendee_classrooms:
+                                name = "Unknown"
+                            else:
+                                classroom = Classroom.objects.get(id=1)
+                                for attendee_classroom in attendee_classrooms:
+                                    if attendee_classroom.id != classroom.id:
+                                        name = "Unknown"
+                                        continue
+                                    else:
+                                        name = attendee.name
+                                        break
+                                classroom = Classroom.objects.get(id=1)
+                                attendance = Attendance.objects.filter(classroom=classroom, attendee=attendee).first()
+
+                                if attendance:
+                                    # Update existing attendance row
+                                    attendance.is_present = True
+                                    attendance.check_in_time = datetime.now()
+                                    attendance.save()
+                        else:
+                            name = "Unknown"
+
+                    cv2.putText(img, str(name), (left + 5, top - 5), font, 1, (255, 255, 255), 2)
+                    cv2.putText(img, str(round(face_distances[best_match_index], 2)), (left + 5, bottom - 5), font, 1,
+                                (255, 255, 0), 1)
+
+                cv2.imshow('Detect Face', img)
+
+                k = cv2.waitKey(10) & 0xff
+                if k == 27:
+                    break
+
+            cam.release()
+            cv2.destroyAllWindows()
+        except:
+            pass
