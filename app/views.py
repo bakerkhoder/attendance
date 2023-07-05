@@ -288,7 +288,6 @@ def OpenCameras(request):
     face_id = faceRecognition.recognizeFace()
     return redirect('home')
 
-
 @login_required(login_url='login')
 def ListTrainer(request):
     if not request.user.is_staff and not request.user.is_superuser:
@@ -351,10 +350,9 @@ def AddTrainer(request):
             from_email = settings.ADMIN_EMAIL
             email_template = 'app/new_trainer.html'
             user_password = str(request.POST['password1'])
-            context_email = {'trainer': trainer, 'password': user_password}
-            email_content = render_to_string(email_template, context_email)
-            email = EmailMessage(subject, email_content,
-                                 from_email, [to_email])
+            context_email = {'trainer': trainer, 'password':user_password}
+            email_content = render_to_string(email_template,context_email)
+            email = EmailMessage(subject, email_content, from_email, [to_email])
             email.content_subtype = 'html'
             email.send()
 
@@ -377,8 +375,7 @@ def UpdateTrainer(request, pk):
     trainer = Trainer.objects.get(id=pk)
 
     if request.method == 'POST':
-        trainer_form = TrainerForm1(
-            request.POST, request.FILES, instance=trainer)
+        trainer_form = TrainerForm1(request.POST, request.FILES, instance=trainer)
 
         if trainer_form.is_valid():
             email = trainer_form.cleaned_data['email']
