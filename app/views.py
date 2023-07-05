@@ -123,3 +123,82 @@ def AddAttendeePage(request):
     attendee_form = AttendeeForm()
     return render(request, 'app/add_attendee.html', {'user_form': user_form,
                                                      'attendee_form': attendee_form})
+
+
+
+
+@login_required(login_url='login')
+def AddAttendee(request):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+    user_form = UserRegistrationForm()
+    attendee_form = AttendeeForm()
+    users = User.objects.all()
+    if request.method == 'POST':
+        pass1 = request.POST.get('password1')
+        pass2 = request.POST.get('password2')
+
+        if pass1 != pass2:
+            messages.error(request, 'PASSWORDS ARE NOT EQUAL')
+            return redirect('add_attendee')
+
+        user_form = UserRegistrationForm(request.POST)
+        attendee_form = AttendeeForm(request.POST, request.FILES)
+
+        if user_form.is_valid() and attendee_form.is_valid():
+            user = user_form.save(commit=False)
+
+            for user1 in users:
+                if user.email == user1.email:
+                    messages.error(request, 'Email already exists!')
+                    return redirect('add_attendee')
+
+            email = user.email
+            user.save()
+
+            attendee = attendee_form.save(commit=False)
+            attendee.email = email
+            attendee.user = user
+            attendee.save()
+
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_L,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(user.username)
+            qr.make(fit=True)
+            qr_image = qr.make_image(fill_color="black", back_color="white")
+            qr_code_path = f"static/images/{user.username}.png"
+
+            with open(qr_code_path, "wb") as f:
+                qr_image.save(f)
+            qr_code_img = f"{user.username}.png"
+
+            subject = f'Welcome to OneSchool, {attendee.name}!'
+            to_email = attendee.email
+            from_email = settings.ADMIN_EMAIL
+            email_template = 'app/new_attendee.html'
+            user_password = str(request.POST['password1'])
+            context_email = {'attendee': attendee, 'password': user_password}
+            email_content = render_to_string(email_template, context_email)
+            email = EmailMessage(subject, email_content, from_email, [to_email])
+            email.content_subtype = 'html'
+            email.attach_file(qr_code_path)
+            # email.send()
+            # we can send a templte also but we need to change it to pdf using xmlpdf
+            # email.send()
+            try:
+                addFace(user.id)
+            except:
+                pass
+            return redirect('list_attendee')
+
+    context = {
+        'user_form': user_form,
+        'attendee_form': attendee_form
+    }
+
+    return render(request, 'app/add_attendee.html', context)
