@@ -373,3 +373,44 @@ def scan_qr_code(request):
 
 def attendance_success(request):
     return render(request, 'app/attendance_success.html')
+
+
+    @login_required(login_url='login')
+def ListTrainerClassroom(request):
+    if not hasattr(request.user, 'trainer'):
+        return HttpResponse(status=404)
+
+    trainer_id = request.user.trainer.id
+    s = request.GET.get('s', '')
+    filter_option = request.GET.get('filter', '')
+
+    classrooms = Classroom.objects.filter(trainer__id=trainer_id)
+
+    q = request.GET.get('q', '')
+    if q == '':
+        attendances = Attendance.objects.filter(
+            classroom__trainer__id=trainer_id)
+    else:
+        attendances = Attendance.objects.filter(
+            Q(classroom__name=q) & Q(classroom__trainer__id=trainer_id))
+
+    if request.method == "GET":
+        attendances1 = Attendance.objects.filter(
+            Q(attendee__name__icontains=s) & Q(classroom__trainer__id=trainer_id))
+
+    if filter_option == 'present':
+        attendances = attendances.filter(is_present=True)
+    elif filter_option == 'absent':
+        attendances = attendances.filter(is_present=False)
+
+    present_count = attendances.filter(is_present=True).count()
+    absent_count = attendances.filter(is_present=False).count()
+
+    context = {
+        'classrooms': classrooms,
+        'attendances': attendances,
+        'attendances1': attendances1,
+        'present_count': present_count,
+        'absent_count': absent_count
+    }
+    return render(request, 'app/list_attendance.html', context)
