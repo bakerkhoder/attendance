@@ -599,3 +599,27 @@ def DeleteResources(request, pk):
         return redirect('course_single', classroom_id)
     context = {'resource': resource}
     return render(request, 'app/delete_resource.html', context)
+
+@login_required(login_url='login')
+def JoinClassroom(request):
+    if not hasattr(request.user, 'attendee'):
+        # if user is not student
+        return HttpResponse(status=404)
+    classrooms = Classroom.objects.all()
+    error_message = None
+    if request.method == "GET":
+        search_query = request.GET.get('search', '')
+        if search_query == '':
+            classrooms = Classroom.objects.all()
+        elif search_query.lower() == 'all':
+            classrooms = Classroom.objects.all()
+        else:
+            classrooms = Classroom.objects.filter(name__icontains=search_query)
+        if len(classrooms) == 0:
+            error_message = "No matching queries!"
+
+    context = {
+        'classrooms': classrooms,
+        'error_message': error_message,
+    }
+    return render(request, 'app/join_classroom.html', context)
