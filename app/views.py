@@ -497,3 +497,30 @@ def DeleteClassroom(request, pk):
         return redirect('list_classroom')
     context = {'classroom': classroom}
     return render(request, 'app/delete_classroom.html', context)
+
+@login_required(login_url='login')
+def ListClassroom(request):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+    classrooms = Classroom.objects.all()
+    context = {'classrooms': classrooms}
+    return render(request, 'app/list_classroom.html', context)
+
+@login_required(login_url='login')
+def TrainerClassrooms(request):
+    if not hasattr(request.user, 'trainer'):
+        # if user is not trainer
+        return HttpResponse(status=404)
+    classrooms = Classroom.objects.filter(trainer__id=request.user.trainer.id)
+    error_message = None
+    if request.method == "GET":
+        search_query = request.GET.get('search', '')
+        if search_query == '' or search_query.lower() == 'all':
+            classrooms = Classroom.objects.filter(trainer__id=request.user.trainer.id)
+        else:
+            classrooms = Classroom.objects.filter(trainer__id=request.user.trainer.id,name__icontains=search_query)
+        if len(classrooms) == 0:
+            error_message = "No matching queries"
+    context = {'classrooms': classrooms, 'error_message':error_message}
+    return render(request, 'app/trainer_classrooms.html', context)
