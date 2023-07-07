@@ -524,3 +524,26 @@ def TrainerClassrooms(request):
             error_message = "No matching queries"
     context = {'classrooms': classrooms, 'error_message':error_message}
     return render(request, 'app/trainer_classrooms.html', context)
+
+@login_required(login_url='login')
+def classroom_info(request, pk):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    classroom = Classroom.objects.get(id=pk)
+    resources = classroom.resources.all()
+    user = request.user
+    enrolled_classrooms = Classroom.objects.exclude(id=pk)
+    students = len(classroom.attendees.all())
+    error_message = None
+    if students >= classroom.max_capacity:
+        error_message = "You can't enroll! Students max capacity has already reached!"
+    list_photos = ['jpg', 'jpeg', 'png', 'gif']
+    context = {
+        'classroom': classroom,
+        'resources': resources,
+        'classrooms': enrolled_classrooms,
+        'list_photos': list_photos,
+        'students': students,
+        'error_message': error_message,
+    }
+    return render(request, 'app/course-single.html', context)
