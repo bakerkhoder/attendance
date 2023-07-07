@@ -586,3 +586,16 @@ def AddToClassroom(request, classroom_id):
         'selected_classroom': selected_classroom
     }
     return render(request, 'app/upload_resource.html', context)
+
+@login_required(login_url='login')
+def DeleteResources(request, pk):
+    if not hasattr(request.user, 'trainer'):
+        # if user is not trainer
+        return HttpResponse(status=404)
+    resource = ClassroomResource.objects.get(id=pk)
+    classroom_id = resource.classroom.id
+    if request.method == "POST":
+        resource.delete()
+        return redirect('course_single', classroom_id)
+    context = {'resource': resource}
+    return render(request, 'app/delete_resource.html', context)
