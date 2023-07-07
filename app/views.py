@@ -433,3 +433,36 @@ def decode_qr_code(image):
         return qr_codes[0].data
 
     return None
+
+
+@login_required(login_url='login')
+def EditTrainerProfile(request):
+    if not hasattr(request.user, 'trainer'):
+        # if user is not trainer
+        return HttpResponse(status=404)
+
+    trainer = Trainer.objects.get(id=request.user.trainer.id)
+
+    if request.method == 'POST':
+        trainer_form = TrainerForm1(
+            request.POST, request.FILES, instance=trainer)
+
+        if trainer_form.is_valid():
+            email = trainer_form.cleaned_data['email']
+
+            # Check if the email already exists for a user other than the current trainer
+            if User.objects.filter(Q(email=email) & ~Q(trainer__id=trainer.id)).exists():
+                messages.error(request, 'Email already exists!')
+                return redirect('edit_trainer_profile')
+
+            trainer.user.email = email  # Save email in the user object
+            trainer.user.save()
+            trainer_form.save()
+            return redirect('home')
+    else:
+        trainer_form = TrainerForm1(instance=trainer)
+
+    context = {
+        'trainer_form': trainer_form
+    }
+    return render(request, 'app/update_trainer.html', context)
