@@ -466,3 +466,128 @@ def EditTrainerProfile(request):
         'trainer_form': trainer_form
     }
     return render(request, 'app/update_trainer.html', context)
+
+
+@login_required(login_url='login')
+def ListTrainer(request):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+    trainers = Trainer.objects.all()
+    context = {'trainers': trainers}
+    return render(request, 'app/list_trainer.html', context)
+
+
+@login_required(login_url='login')
+def AddTrainerPage(request):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+    user_form = UserRegistrationForm()
+    trainer_form = TrainerForm()
+    return render(request, 'app/add_trainer.html', {'user_form': user_form,
+                                                    'trainer_form': trainer_form})
+
+
+@login_required(login_url='login')
+def AddTrainer(request):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+    users = User.objects.all()
+    user_form = UserRegistrationForm()
+    trainer_form = TrainerForm()
+
+    if request.method == 'POST':
+        pass1 = request.POST.get('password1')
+        pass2 = request.POST.get('password2')
+
+        if pass1 != pass2:
+            messages.error(request, 'PASSWORDS ARE NOT EQUAL')
+            return redirect('add_trainer')
+
+        user_form = UserRegistrationForm(request.POST)
+        trainer_form = TrainerForm(request.POST, request.FILES)
+
+        if user_form.is_valid() and trainer_form.is_valid():
+
+            user = user_form.save(commit=False)
+
+            for user1 in users:
+                if user.email == user1.email:
+                    messages.error(request, 'Email already exists!')
+                    return redirect('add_trainer')
+
+            email = user.email
+            user.save()
+
+            trainer = trainer_form.save(commit=False)
+            trainer.email = email
+            trainer.user = user
+            trainer.save()
+            subject = f'New trainer in OneSchool, Welcome {trainer.name}!'
+            to_email = trainer.email
+            from_email = settings.ADMIN_EMAIL
+            email_template = 'app/new_trainer.html'
+            user_password = str(request.POST['password1'])
+            context_email = {'trainer': trainer, 'password': user_password}
+            email_content = render_to_string(email_template, context_email)
+            email = EmailMessage(subject, email_content,
+                                 from_email, [to_email])
+            email.content_subtype = 'html'
+            email.send()
+
+            return redirect('list_trainer')
+
+    context = {
+        'user_form': user_form,
+        'trainer_form': trainer_form
+    }
+
+    return render(request, 'app/add_trainer.html', context)
+
+
+@login_required(login_url='login')
+def UpdateTrainer(request, pk):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+
+    trainer = Trainer.objects.get(id=pk)
+
+    if request.method == 'POST':
+        trainer_form = TrainerForm1(
+            request.POST, request.FILES, instance=trainer)
+
+        if trainer_form.is_valid():
+            email = trainer_form.cleaned_data['email']
+
+            # Check if the email already exists for a user other than the current trainer
+            if User.objects.filter(Q(email=email) & ~Q(trainer__id=pk)).exists():
+                messages.error(request, 'Email already exists!')
+                return redirect('update_trainer', trainer.id)
+
+            trainer_form.save()
+            trainer.user.email = email
+            trainer.user.save()
+            return redirect('list_trainer')
+    else:
+        trainer_form = TrainerForm1(instance=trainer)
+
+    context = {
+        'trainer_form': trainer_form
+    }
+    return render(request, 'app/update_trainer.html', context)
+
+
+@login_required(login_url='login')
+def DeleteTrainer(request, pk):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+    trainer = Trainer.objects.get(id=pk)
+    if request.method == 'POST':
+        trainer.delete()
+        return redirect('list_trainer')
+    context = {'trainer': trainer}
+    return render(request, 'app/delete_trainer.html', context)
