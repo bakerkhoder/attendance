@@ -673,3 +673,35 @@ def unenroll_classroom(request, pk):
         'classroom': classroom,
     }
     return render(request,'app/unenroll_classroom.html',context)
+
+@login_required(login_url = 'login')
+def message_view(request):
+    if request.user.is_staff or request.user.is_superuser:
+        return HttpResponse(status=404)
+    if request.method == "POST":
+        subject = request.POST['subject']
+        content = request.POST['content']
+        message = Message()
+        message.sender = request.user
+        message.subject = subject
+        message.content = content
+        message.save()
+        sender_email = request.user.email
+        try:
+            attendee = request.user.attendee
+            email_subject = f'New message from the attendee {attendee.name}'
+        except User.attendee.RelatedObjectDoesNotExist:
+            trainer = request.user.trainer
+            email_subject = f'New message from the trainer {trainer.name}'
+        email_content = f'subject: {message.subject}\n\nContent: {message.content}'
+        email_message = EmailMessage(email_subject,email_content,sender_email,[settings.ADMIN_EMAIL])
+        email_message.send()
+        return redirect('home')
+    else:
+        trainers = Trainer.objects.all()
+        classrooms = Classroom.objects.all()
+        context = {
+            'trainers': trainers,
+            'classrooms': classrooms
+        }
+        return render(request,'home.html',context)
