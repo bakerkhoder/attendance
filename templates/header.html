@@ -1,0 +1,218 @@
+{% load static %}
+
+<style>
+
+    header.site-navbar {
+        background-color: #7971EA;
+        /* Change this color to the desired light blue */
+        /* Add any other styles you want for the navigation bar */
+    }
+
+    /* Add any additional CSS styles for the navigation bar here */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+        background-color: none;
+    }
+
+    .dropdown-button {
+        color: #333;
+        padding: 8px 12px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        border-radius: 5%;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    .dropdown-content a {
+        color: #333;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-content a:hover {
+        background-color: blue;
+        border-radius: 5%;
+        color: antiquewhite;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+</style>
+
+<body>
+    <div class="site-wrap">
+        <div class="site-mobile-menu site-navbar-target">
+            <div class="site-mobile-menu-header">
+                <div class="site-mobile-menu-close mt-3">
+                    <span class="icon-close2 js-menu-toggle"></span>
+                </div>
+            </div>
+            <div class="site-mobile-menu-body"></div>
+        </div>
+        <header class="site-navbar py-4 js-sticky-header site-navbar-target" role="banner">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center">
+                    <div class="site-logo mr-auto w-25"><a href='{% url "home" %}'>OneSchool</a></div>
+                    <div class="mx-auto text-center sites">
+                        <nav class="site-navigation position-relative text-center" role="navigation">
+                            <ul class="site-menu main-menu js-clone-nav mx-auto d-none d-lg-block  m-0 p-0">
+
+                                <li><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                                {% if request.user.is_authenticated and request.user.is_superuser %}
+                                <!-- <li>
+                                    <a class="nav-link" href="{% url 'list_trainer' %}">Trainers</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="{% url 'list_attendee' %}">Attendees</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="{% url 'list_classroom' %}">Classrooms</a>
+                                </li> -->
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="{% url 'train_data_set' %}">Train data</span></a>
+                                </li>
+                                {% endif %}
+                                {% if request.user.is_authenticated and request.user.trainer %}
+                                <li>
+                                    <a class="nav-link" href="{% url 'list_trainer_classroom' %}">Attendance sheet</a>
+                                </li>
+                                {% endif %}
+                                {% if request.user.is_authenticated and request.user.attendee %}
+                                <li>
+                                    <a class="nav-link" href="{% url 'join_classroom' %}">Classrooms
+                                    </a>
+                                </li>
+                                {% endif %}
+                                <!-- {% if request.user.is_authenticated and request.user.trainer %}
+                                <li>
+                                    <a class="nav-link" href="{% url 'edit_trainer_profile' %}">Edit profile
+                                    </a>
+                                </li>
+                                {% endif %} -->
+                                <!-- {% if request.user.is_authenticated and request.user.attendee %}
+                            <li>
+                                <a class="nav-link" href="{% url 'edit_attendee_profile' %}">Edit profile
+                                </a>
+                            </li>
+                            {% endif %} -->
+                                {% if request.user.is_authenticated and request.user.trainer %}
+                                <li>
+                                    <a class="nav-link" href="{% url 'trainer_classroom'  %}"> My classrooms
+                                    </a>
+                                </li>
+                                {% endif %}
+                                {% if request.user.is_authenticated and request.user.is_superuser %}
+                                <li>
+                                    <a class="nav-link" href="{% url 'open_camera'  %}">Open cameras
+                                    </a>
+                                </li>
+                                {% endif %}
+                                {% if request.user.is_authenticated and request.user.is_superuser %}
+                                <li>
+                                    <a class="nav-link" href="{% url 'scan-qr-code'  %}">Scan qr code
+                                    </a>
+                                </li>
+                                {% endif %}
+                                <li>
+                                    {% if not request.user.is_authenticated %}
+                                    <a href="">
+                                        <img src="{% static './images/user.png' %}" alt="" style="border-radius:50%;">
+                                        <span>
+                                            LOGIN
+                                        </span>
+                                    </a>
+                                    {% elif request.user.is_authenticated and request.user.trainer %}
+                                    <div class="dropdown">
+                                        <a class="dropdown-button">
+                                            <img src="{{request.user.trainer.profile_pic.url}}" width="40px"
+                                                height="40px" style="border-radius: 50%;" />
+                                            <span style="color: #333;">{{ request.user.trainer.name }}&#9662;</span>
+                                        </a>
+                                        <div class="dropdown-content">
+                                            <a href="{% url 'edit_trainer_profile' %}"
+                                                style="width: 100%;text-align: center;">My Profile</a>
+                                            <a href="{% url 'logout' %}"
+                                                style="width: 100%;text-align: center;">Logout</a>
+                                        </div>
+                                    </div>
+                                    {% elif request.user.is_authenticated and request.user.is_superuser %}
+                                    <div class="dropdown">
+                                        <a class="dropdown-button">
+                                            <img src="{% static 'images/user.png' %}" width="40px"
+                                                height="40px" style="border-radius: 50%;" />
+                                            <span style="color: #333;">{{ request.user.first_name }}&#9662;</span>
+                                        </a>
+                                        <div class="dropdown-content" style="width: 200px;">
+                                            <a href="{% url 'list_trainer' %}"
+                                                style="width: 100%;text-align: center;">Manage trainers</a>
+                                            <a href="{% url 'list_attendee' %}"
+                                                style="width: 100%;text-align: center;">Manage attendees</a>
+                                            <a href="{% url 'list_classroom' %}"
+                                                style="width: 100%;text-align: center;">Manage classrooms</a>
+                                            <a href="{% url 'logout' %}"
+                                                style="width: 100%;text-align: center;">Logout</a>
+                                        </div>
+                                    {% else %}
+                                    <div class="dropdown">
+                                        <a class="dropdown-button">
+                                            <img src="{{request.user.attendee.profile_pic.url}}" width="40px"
+                                                height="40px" style="border-radius: 50%;" />
+                                            <span style="color: #333;">{{ request.user.attendee.name }}&#9662;</span>
+                                        </a>
+                                        <div class="dropdown-content">
+                                            <a href="{% url 'edit_attendee_profile' %}"
+                                                style="width: 100%;text-align: center;">My Profile</a>
+                                            <a href="{% url 'logout' %}"
+                                                style="width: 100%;text-align: center;">Logout</a>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    {% if not request.user.is_superuser %}
+                    <div class="ml-auto w-25">
+                        <nav class="site-navigation position-relative text-right" role="navigation">
+                            <ul
+                                class="site-menu main-menu site-menu-dark js-clone-nav mr-auto d-none d-lg-block m-0 p-0">
+                                <li class="cta"><a class="nav-link" href="#contact-section"><span>Contact Us</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <a class="d-inline-block d-lg-none site-menu-toggle js-menu-toggle text-black float-right"
+                            href="#"><span class="icon-menu h3"></span></a>
+                    </div>
+                    {% else %}
+                    <div class="ml-auto w-25"></div>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+    </div>
+    <script>
+        window.addEventListener('scroll', function () {
+            var header = document.querySelector('.header');
+            var dropdownContent = document.querySelector('.dropdown-content');
+
+            var headerColor = window.getComputedStyle(header).backgroundColor;
+            dropdownContent.style.backgroundColor = headerColor;
+        });
+
+    </script>
+    <br>
+    <br>
+    <br>
+</body>
