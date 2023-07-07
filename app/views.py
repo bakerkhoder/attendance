@@ -433,3 +433,67 @@ def decode_qr_code(image):
         return qr_codes[0].data
 
     return None
+
+@login_required(login_url='login')
+def AddClassroomPage(request):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+    classroom_form = ClassroomForm()
+    return render(request, 'app/add_classroom.html', {'classroom_form': classroom_form})
+
+
+@login_required(login_url='login')
+def AddClassroom(request):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+    classroom_form = ClassroomForm()
+    if request.method == 'POST':
+        classroom_form = ClassroomForm(request.POST, request.FILES)
+        if classroom_form.is_valid():
+            classroom = classroom_form.save(commit=False)
+            classroom.code = generate_random_string(8)
+            classroom.save()
+            subject = 'New Classroom assigned to you!'
+            to_email = classroom.trainer.email
+            from_email = settings.ADMIN_EMAIL
+            email_template = 'app/new_classroom.html'
+            context = {'classroom': classroom}
+            email_content = render_to_string(email_template,context)
+            email = EmailMessage(subject, email_content, from_email, [to_email])
+            email.content_subtype = 'html'
+            email.send()
+            return redirect('list_classroom')
+    return render(request, 'app/add_classroom.html', {'classroom_form': classroom_form})
+
+@login_required(login_url='login')
+def UpdateClassroom(request, pk):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+    classroom = Classroom.objects.get(id=pk)
+    if request.method == 'POST':
+        classroom_form = ClassroomForm(request.POST, request.FILES, instance=classroom)
+        if classroom_form.is_valid():
+            classroom_form.save()
+            return redirect('list_classroom')
+    else:
+        classroom_form = ClassroomForm(instance=classroom)
+
+    context = {
+        'classroom_form': classroom_form
+    }
+    return render(request, 'app/update_classroom.html', context)
+
+@login_required(login_url='login')
+def DeleteClassroom(request, pk):
+    if not request.user.is_staff and not request.user.is_superuser:
+        # if user is not admin
+        return HttpResponse(status=404)
+    classroom = Classroom.objects.get(id=pk)
+    if request.method == 'POST':
+        classroom.delete()
+        return redirect('list_classroom')
+    context = {'classroom': classroom}
+    return render(request, 'app/delete_classroom.html', context)
