@@ -547,3 +547,42 @@ def classroom_info(request, pk):
         'error_message': error_message,
     }
     return render(request, 'app/course-single.html', context)
+
+@login_required(login_url='login')
+def AddToClassroom(request, classroom_id):
+    if not hasattr(request.user, 'trainer'):
+        # if user not trainer
+        return HttpResponse(status=404)
+    selected_classroom = Classroom.objects.get(id=classroom_id)
+    classrooms = Classroom.objects.filter(trainer__id=request.user.trainer.id)
+    # attendees bel selected_classroom.attendees.all() hiye bel 3ade attendee men doun s
+    # bas la2enoo l classroom atribute li bel attendee model hiye manytomany
+    attendees = selected_classroom.attendees.all()
+
+    if request.method == 'POST':
+        resource_form = ClassroomResourceForm(request.POST, request.FILES)
+        if resource_form.is_valid():
+            resource = resource_form.save(commit=False)
+            resource.classroom = selected_classroom
+            resource.save()
+            messages.success(request, 'Resource uploaded successfully.')
+            email_subject = 'Classrooms'
+            email_body = f'new content for the classroom' + f"  {selected_classroom}"
+            from_email = settings.ADMIN_EMAIL
+            for attendee in attendees:
+                to_email = [attendee.email, attendee.email]
+                email = EmailMessage(email_subject, email_body, from_email, to_email)
+                email.content_subtype = 'html'
+                email.send()
+
+            return redirect('course_single', classroom_id)
+
+    else:
+        resource_form = ClassroomResourceForm()
+
+    context = {
+        'resource_form': resource_form,
+        'classrooms': classrooms,
+        'selected_classroom': selected_classroom
+    }
+    return render(request, 'app/upload_resource.html', context)
