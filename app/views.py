@@ -623,3 +623,34 @@ def JoinClassroom(request):
         'error_message': error_message,
     }
     return render(request, 'app/join_classroom.html', context)
+
+@login_required(login_url='login')
+def enroll_classroom(request, pk):
+    if not hasattr(request.user, 'attendee'):
+        # if user is not trainer
+        return HttpResponse(status=404)
+    classroom = Classroom.objects.get(id=pk)
+    attendee = request.user.attendee
+    error_message = None
+    if attendee in classroom.attendees.all():
+        return HttpResponse(status=404)
+    if request.method == "POST":
+        code = request.POST['code']
+        if code != classroom.code:
+            error_message = 'invalid code!!'
+            # messages.error(request, 'invalid code!!')
+            # return redirect('enroll', classroom.id)
+            return render(request,'app/enroll_classroom.html',{'error_message': error_message})
+        classroom.attendees.add(attendee)
+        attendee_attendance = Attendance.objects.create(
+            classroom=classroom,
+            attendee=attendee,
+            is_present=False,
+            check_in_time=None
+        )
+        attendee_attendance.save()
+        return redirect('course_single', classroom.id)
+    context = {
+        'classroom': classroom,
+    }
+    return render(request, 'app/enroll_classroom.html', context)
