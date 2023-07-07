@@ -654,3 +654,22 @@ def enroll_classroom(request, pk):
         'classroom': classroom,
     }
     return render(request, 'app/enroll_classroom.html', context)
+
+@login_required(login_url = 'login')
+def unenroll_classroom(request, pk):
+    if not hasattr(request.user, 'attendee'):
+        # if user is not trainer
+        return HttpResponse(status=404)
+    classroom = Classroom.objects.get(id=pk)
+    attendee = request.user.attendee
+    if attendee not in classroom.attendees.all():
+        return HttpResponse(status=404)
+    if request.method == "POST":
+        classroom.attendees.remove(attendee)
+        attendance = Attendance.objects.get(classroom=classroom, attendee=attendee)
+        attendance.delete()
+        return redirect('course_single',classroom.id)
+    context = {
+        'classroom': classroom,
+    }
+    return render(request,'app/unenroll_classroom.html',context)
