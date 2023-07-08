@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from preview.colorlib.com/theme/oneschool/course-single.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 24 May 2023 15:17:34 GMT -->
+
+<head>
+    {% load static %}
+    <title>OneSchool</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'fonts/icomoon/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet">
+    <link href="{% static 'css/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/owl.theme.default.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/owl.theme.default.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery.fancybox.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-datepicker.css' %}" rel="stylesheet">
+    <link href="{% static 'fonts/flaticon/font/flaticon.css' %}" rel="stylesheet">
+    <link href="{% static 'css/aos.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <script nonce="3729f697-0974-4ac6-adf8-74b39c6b0ca5">
+        (function (w, d) { !function (bg, bh, bi, bj) { bg[bi] = bg[bi] || {}; bg[bi].executed = []; bg.zaraz = { deferred: [], listeners: [] }; bg.zaraz.q = []; bg.zaraz._f = function (bk) { return function () { var bl = Array.prototype.slice.call(arguments); bg.zaraz.q.push({ m: bk, a: bl }) } }; for (const bm of ["track", "set", "debug"]) bg.zaraz[bm] = bg.zaraz._f(bm); bg.zaraz.init = () => { var bn = bh.getElementsByTagName(bj)[0], bo = bh.createElement(bj), bp = bh.getElementsByTagName("title")[0]; bp && (bg[bi].t = bh.getElementsByTagName("title")[0].text); bg[bi].x = Math.random(); bg[bi].w = bg.screen.width; bg[bi].h = bg.screen.height; bg[bi].j = bg.innerHeight; bg[bi].e = bg.innerWidth; bg[bi].l = bg.location.href; bg[bi].r = bh.referrer; bg[bi].k = bg.screen.colorDepth; bg[bi].n = bh.characterSet; bg[bi].o = (new Date).getTimezoneOffset(); if (bg.dataLayer) for (const bt of Object.entries(Object.entries(dataLayer).reduce(((bu, bv) => ({ ...bu[1], ...bv[1] }))))) zaraz.set(bt[0], bt[1], { scope: "page" }); bg[bi].q = []; for (; bg.zaraz.q.length;) { const bw = bg.zaraz.q.shift(); bg[bi].q.push(bw) } bo.defer = !0; for (const bx of [localStorage, sessionStorage]) Object.keys(bx || {}).filter((bz => bz.startsWith("_zaraz_"))).forEach((by => { try { bg[bi]["z_" + by.slice(7)] = JSON.parse(bx.getItem(by)) } catch { bg[bi]["z_" + by.slice(7)] = bx.getItem(by) } })); bo.referrerPolicy = "origin"; bo.src = "../../cdn-cgi/zaraz/sd0d9.js?z=" + btoa(encodeURIComponent(JSON.stringify(bg[bi]))); bn.parentNode.insertBefore(bo, bn) };["complete", "interactive"].includes(bh.readyState) ? zaraz.init() : bg.addEventListener("DOMContentLoaded", zaraz.init) }(w, d, "zarazData", "script"); })(window, document);
+
+
+    </script>
+    <style>
+        .element-card {
+            margin-bottom: 20px;
+            transform: scale(1);
+            transition: transform 0.3s ease;
+            border: 1px solid #ccc;
+        }
+
+        .element-card:hover {
+            transform: scale(1.05);
+            border-color: #007bff;
+        }
+
+        .pdf-container {
+            height: auto;
+            /* Adjust height as needed */
+        }
+
+        .resource-container {
+            margin-bottom: 20px;
+            transform: scale(1);
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .delete-link {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 4px;
+        background-color: #ff3344;
+        color: #fff;
+        text-decoration: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease-in-out;
+        margin-top: 15px;
+    }
+
+    .delete-link:hover{
+        color: lightpink;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    </style>
+</head>
+
+<body data-offset="300" data-spy="scroll" data-target=".site-navbar-target">
+    <div class="site-wrap">
+        <div class="site-mobile-menu site-navbar-target">
+            <div class="site-mobile-menu-header">
+                <div class="site-mobile-menu-close mt-3">
+                    <span class="icon-close2 js-menu-toggle"></span>
+                </div>
+            </div>
+            <div class="site-mobile-menu-body"></div>
+        </div>
+        {% include 'header.html' %}
+        <!-- <header class="site-navbar py-4 js-sticky-header site-navbar-target" role="banner">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center">
+                    <div class="site-logo mr-auto w-25"><a href="">OneSchool</a></div>
+                    <div class="mx-auto text-center">
+                        <nav class="site-navigation position-relative text-right" role="navigation">
+                            <ul class="site-menu main-menu js-clone-nav mx-auto d-none d-lg-block  m-0 p-0">
+                                <li><a class="nav-link" href="#home-section">Home</a></li>
+                                <li><a class="nav-link" href="#courses-section">Classrooms</a></li>
+                                <li><a class="nav-link" href="{% url 'home' %}">Go Back</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="ml-auto w-25">
+                        <nav class="site-navigation position-relative text-right" role="navigation">
+                            <ul
+                                class="site-menu main-menu site-menu-dark js-clone-nav mr-auto d-none d-lg-block m-0 p-0">
+                                <li class="cta"><a class="nav-link" href="#contact-section"><span>Contact Us</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <a class="d-inline-block d-lg-none site-menu-toggle js-menu-toggle text-black float-right"
+                            href="#"><span class="icon-menu h3"></span></a>
+                    </div>
+                </div>
+            </div>
+        </header> -->
+        <div class="intro-section single-cover" id="home-section">
+            <div class="slide-1 " data-stellar-background-ratio="0.5"
+                style="background-image: url('images/img_2.jpg');">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-12">
+                            <div class="row justify-content-center align-items-center text-center">
+                                <div class="col-lg-6">
+                                    <h1 data-aos="fade-up" data-aos-delay="0">{{classroom.name}}</h1>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center align-items-center text-center">
+                                <div class="col-lg-6">
+                                    <p data-aos="fade-up" data-aos-delay="0">
+                                        {% if students == 1 %}
+                                            {{ students }} student enrolled in this classroom
+                                        {% elif students == 0 %}
+                                            There's no students yet in this classroom
+                                        {% else %}
+                                            {{ students }} students enrolled in this classroom
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="site-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mb-5">
+                        <div class="mb-5">
+                            <h3 class="text-black">Classroom Description</h3>
+                            <p>{{ classroom.description }}</p>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <img alt="Image" class="img-fluid rounded" src="{{ classroom.profile_pic.url }}">
+                                </div>
+                            </div>
+                            {% if not request.user.attendee in classroom.attendees.all and request.user.attendee %}
+                                {% if not error_message %}
+                                    <p class="mt-4"><a class="btn btn-primary" href='{% url "enroll" classroom.id %}'>Enroll
+                                            now!</a></p>
+                                {% else %}
+                                    <p style="color:red !important">{{ error_message }}</p>
+                                {% endif %}
+                            {% elif request.user.attendee and request.user.attendee in classroom.attendees.all %}
+                                <p class="mt-4"><a class="btn btn-primary" href='{% url "unenroll_classroom" classroom.id %}'>Unenroll</a></p>
+                            {% endif %}
+                            {% if request.user.trainer %}
+                                <a href="{% url 'add_to_classroom' classroom.id %}" class="btn btn-primary">Upload resource</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-lg-4 pl-lg-5">
+                        <div class="mb-5 text-center border rounded course-instructor">
+                            <h3 class="mb-5 text-black text-uppercase h6 border-bottom pb-3">Classroom Instructor</h3>
+                            <div class="mb-4 text-center">
+                                <img alt="Image" class="w-25 rounded-circle mb-4"
+                                    src="{{ classroom.trainer.profile_pic.url }}" style="height: 60px;">
+                                <h3 class="h5 text-black mb-4">{{ classroom.trainer.name }}</h3>
+                                <p>{{ classroom.trainer.expertise }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="text-align:center;margin-bottom:20px;">Classroom Resources</h1>
+                        {% if request.user.attendee and not request.user.attendee in classroom.attendees.all %}
+                        <p>Please click on the button Enroll now and enter the code of the classroom to have access to
+                            the classroom resources</p>
+                        {% elif request.user.attendee and request.user.attendee in classroom.attendees.all or request.user.is_superuser or request.user.trainer %}
+                        <br>
+                        <div class="container">
+                            {% if resources|length == 0 %}
+                            <p>No resources for this classroom</p>
+                            {% endif %}
+                            {% for resource in resources %}
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="card element-card">
+                                        <div class="card-header" id="heading{{ resource.id }}">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h5 class="mb-0">
+                                                        <button aria-controls="collapse{{ resource.id }}"
+                                                                aria-expanded="false" class="btn btn-link"
+                                                                data-target="#collapse{{ resource.id }}"
+                                                                data-toggle="collapse">
+                                                            {% if resource.file.url|lower|slice:'-3:' == 'pdf' %}
+                                                                <img src="{% static 'images/pdf_icon.png' %}" style="width:25px;">
+                                                            {% elif resource.file.url|lower|slice:'-3:' == 'txt' %}
+                                                                <img src="{% static 'images/txt_icon.png' %}" style="width:25px;">
+                                                            {% elif resource.file.url|lower|slice:'-3:' in list_photos %}
+                                                                <img src="{% static 'images/image_icon.png' %}" style="width:25px;">
+                                                            {% elif resource.file.url|lower|slice:'-3:' == 'zip' %}
+                                                                <img src="{% static 'images/zip_icon.png' %}" style="width:25px;">
+                                                            {% elif resource.file.url|lower|slice:'-3:' == 'rar' %}
+                                                                <img src="{% static 'images/rar_icon.jpg' %}" style="width:25px;">
+                                                            {% elif resource.file.url|lower|slice:'-5:' == '.docx' %}
+                                                                <img src="{% static 'images/docx_icon.png' %}" style="width:25px;">
+                                                            {% elif resource.file.url|lower|slice:'-5:' == '.xlsx' %}
+                                                                <img src="{% static 'images/xlsx_icon.png' %}" style="width:25px;">
+                                                            {% elif resource.file.url|lower|slice:'-4:' == '.csv' %}
+                                                                <img src="{% static 'images/csv_icon.png' %}" style="width:25px;">
+                                                            {% elif resource.file.url|lower|slice:'-4:' == '.mp4' %}
+                                                                <img src="{% static 'images/mp4_icon.png' %}" style="width:25px;">
+                                                            {% endif %}
+                                                            <a href="{{ resource.file.url }}" target="_blank">{{ resource.title }}</a>
+                                                        </button>
+                                                    </h5>
+                                                    
+                                                </div>
+                                                <div class="col">
+                                                    <p>Released by {{ resource.classroom.trainer.name }} in {{resource.created}}</p>
+                                                </div>
+                                                <div class="col text-right">
+                                                    {% if request.user.attendee or request.user.is_superuser %}
+                                                    <a class="btn btn-primary btn-sm" download
+                                                        href="{{ resource.file.url }}">Download</a>
+                                                    {% else %}
+                                                    <a class="delete-link" href="{% url 'delete_recourse' resource.id %}">Delete</a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="site-section courses-title bg-dark" id="courses-section">
+            <div class="container">
+                <div class="row mb-5 justify-content-center">
+                    <div class="col-lg-7 text-center" data-aos="fade-up" data-aos-delay="">
+                        <h2 class="section-title">More Classrooms</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="site-section courses-entry-wrap" data-aos="fade" data-aos-delay="100">
+            <div class="container">
+                <div class="row">
+                    <div class="owl-carousel col-12 nonloop-block-14">
+                        {% for classroom in classrooms %}
+                        <div class="course bg-white h-100 align-self-stretch">
+                            <figure class="m-0">
+                                <a href="{% url 'course_single' classroom.id %}"><img alt="Image" class="img-fluid"
+                                        src="{{classroom.profile_pic.url}}" style="height: 300px;"></a>
+                            </figure>
+                            <div class="course-inner-text py-4 px-4"
+                                style="display:flex;flex-direction:column;height:300px;">
+
+                                <div class="meta" style="display:flex;flex-direction:row;align-items:center;"><span><img
+                                            src="{{classroom.trainer.profile_pic.url}}" style="
+                                        border-radius: 50%;
+                                        width: 55px;
+                                        height: 55px;" /></span>By trainer {{classroom.trainer.name}}</div>
+                                <h3><a href="{% url 'course_single' classroom.id %}">{{classroom.name}}</a></h3>
+                                <p style="overflow:auto;" class="description">{{classroom.description}}</p>
+                            </div>
+                            <div class="d-flex border-top stats" style="font-size:1.12rem;">
+                                {% if request.user.is_authenticated and request.user.trainer %}
+                                    <div class="py-3 px-4"><a href="#" class="btn btn-primary">Go to Classroom!</a></div>
+                                {% elif request.user.is_authenticated and request.user.attendee %}
+                                    {% if request.user.attendee in classroom.attendees.all %}
+                                        <div class="py-3 px-4">
+                                            <p>Already enrolled</p>
+                                        </div>
+                                    {% else %}
+                                        <div class="py-3 px-4"><a href='{% url "enroll" classroom.id %}'
+                                            class="btn btn-primary">Enroll now!</a></div>
+                                    {% endif %}
+                                {% elif request.user.is_authenticated and request.user.is_superuser %}
+                                
+                                {% else %}
+                                <div class="py-3 px-4"><a href="{% url 'login' %}" class="btn btn-primary">Enroll
+                                        now!</a></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-7 text-center">
+                        <button class="customPrevBtn btn btn-primary m-1">Prev</button>
+                        <button class="customNextBtn btn btn-primary m-1">Next</button>
+                        {% if request.user.is_authenticated and request.user.is_superuser %}
+                            <a href="{% url 'list_classroom' %}" class="btn btn-primary">Manage classrooms</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer-section bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h3>About OneSchool</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Porro consectetur ut hic ipsum et
+                            veritatis corrupti. Itaque eius soluta optio dolorum temporibus in, atque, quos fugit sunt
+                            sit
+                            quaerat dicta.</p>
+                    </div>
+                    <div class="col-md-3 ml-auto">
+                        <h3>Links</h3>
+                        <ul class="list-unstyled footer-links">
+                            <li><a href="#home-section">Home</a></li>
+                            <li><a href="#courses-section">Classrooms</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h3>Subscribe</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt incidunt iure iusto
+                            architecto? Numquam, natus?</p>
+                        <form action="#" class="footer-subscribe">
+                            <div class="d-flex mb-5">
+                                <input class="form-control rounded-0" placeholder="Email" type="text">
+                                <input class="btn btn-primary rounded-0" type="submit" value="Subscribe">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row pt-5 mt-5 text-center">
+                    <div class="col-md-12">
+                        <div class="border-top pt-5">
+                            <p>
+
+                                Copyright &copy;
+                                <script>document.write(new Date().getFullYear());</script>
+                                All rights reserved
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery-migrate-3.0.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.stellar.min.js' %}"></script>
+    <script src="{% static 'js/jquery.countdown.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+    <script src="{% static 'js/aos.js' %}"></script>
+    <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-23581568-13');
+
+
+
+    </script>
+    <script crossorigin="anonymous"
+        data-cf-beacon='{"rayId":"7cc681507fc11892","version":"2023.4.0","b":1,"token":"cd0b4b3a733644fc843ef0b185f98241","si":100}'
+        defer
+        integrity="sha512-jGCTpDpBAYDGNYR5ztKt4BQPGef1P0giN6ZGVUi835kFF88FOmmn8jBQWNgrNd8g/Yu421NdgWhwQoaOPFflDw=="
+        src="https://static.cloudflareinsights.com/beacon.min.js/v52afc6f149f6479b8c77fa569edb01181681764108816"></script>
+    <script>
+        $(document).ready(function () {
+            // Close button event handler
+            $('.close-btn').click(function () {
+                $(this).closest('.resource-container').hide();
+            });
+        });
+
+    </script>
+</body>
+
+<!-- Mirrored from preview.colorlib.com/theme/oneschool/course-single.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 24 May 2023 15:17:34 GMT -->
+
+</html>
