@@ -705,3 +705,17 @@ def message_view(request):
             'classrooms': classrooms
         }
         return render(request,'home.html',context)
+    
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'app/password_reset.html'
+
+    def form_valid(self, form):
+        email = form.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            return super().form_valid(form)
+        else:
+            messages.error(self.request, 'Email does not exist.')
+            return render(self.request, self.template_name, {'form': form})
+
+
+password_reset_view = CustomPasswordResetView.as_view()
