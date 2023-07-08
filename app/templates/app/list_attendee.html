@@ -1,0 +1,163 @@
+{% extends 'main.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Table container styles */
+    .table-container {
+        padding: 40px; /* Add desired padding value */
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Table styles */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center;
+        border: 3px solid #ddd;
+        width: auto;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    /* Add animation */
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    /* Apply animation to table rows */
+    tr {
+        animation: fade-in 0.5s ease-in-out;
+    }
+
+    /* Add box shadow and transition to cells */
+    td {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease-in-out;
+        background-color: #f2f2f2;
+    }
+
+    /* Change box shadow on hover */
+    td:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Style the profile picture */
+    .profile-pic {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    /* Style the QR code */
+    .qr-code {
+        width: 50px;
+        height: 50px;
+    }
+
+    /* Style the update and delete links as buttons */
+    .update-link,
+    .delete-link {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 4px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease-in-out;
+    }
+
+    .delete-link{
+        background-color: #ff3344;
+    }
+
+    /* Change box shadow on link hover */
+    .update-link:hover,
+    .delete-link:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .delete-link:hover{
+        color: lightpink;
+    }
+
+    /* Center-align the "Add attendee" link */
+    .add-attendee-link {
+        text-align: center;
+    }
+
+    .links{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .links p{
+        margin-right: 30px;
+    }
+
+    .big{
+        background-image: url({% static 'images/attendee.png' %});
+    }
+</style>
+<div class="big">
+<br>
+<br>
+<br>
+<br>
+<div class="links">
+    <p class="add-classroom-link"><a class="update-link" href="{% url 'home' %}">Go back</a></p>
+    <p class="add-attendee-link"><a class="update-link" href="{% url 'add_attendee_page' %}">Add attendee</a></p>
+</div>
+
+<div class="table-container">
+
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Profile pic</th>
+            <th>QR Code</th>
+            <th>Update</th>
+            <th>Delete</th>
+        </tr>
+        {% for attendee in attendees %}
+        <tr>
+            <td>{{attendee.name}}</td>
+            <td>{{attendee.address}}</td>
+            <td>{{attendee.phone}}</td>
+            <td>{{attendee.email}}</td>
+            <td align="center"><img src="{{attendee.profile_pic.url}}" class="profile-pic"></td>
+            <td align="center"><img src="{% static 'images/' %}{{ attendee.user.username }}.png" class="qr-code"></td>
+            <td><a href="{% url 'update_attendee' attendee.id %}" class="update-link">update</a></td>
+            <td><a href="{% url 'delete_attendee' attendee.id %}" class="delete-link">delete</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="8">There are no attendees yet</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</div>
+{% endblock content %}
