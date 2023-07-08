@@ -1,0 +1,65 @@
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>Scan QR Code</title>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <h1>Scan QR Code</h1>-->
+<!--    <video id="video-preview" width="400" height="300" autoplay></video>-->
+<!--    <canvas id="canvas" width="400" height="300"></canvas>-->
+<!--    <div style="display:none;" id="qr-codes">-->
+<!--        {% for user in users %}-->
+<!--            <img src="data:image/png;base64,{{ user.qr_code }}" alt="QR Code" data-username="{{ user.username }}">-->
+<!--        {% endfor %}-->
+<!--    </div>-->
+
+<!--    <script>-->
+<!--        const video = document.getElementById('video-preview');-->
+<!--        const canvas = document.getElementById('canvas');-->
+<!--        const context = canvas.getContext('2d');-->
+<!--        const qrCodes = document.querySelectorAll('#qr-codes img');-->
+
+<!--        // Get media devices and start video stream-->
+<!--        navigator.mediaDevices.getUserMedia({ video: true })-->
+<!--            .then(function(stream) {-->
+<!--                video.srcObject = stream;-->
+<!--                video.play();-->
+<!--                scanQRCode();-->
+<!--            })-->
+<!--            .catch(function(error) {-->
+<!--                console.error('Error accessing camera:', error);-->
+<!--            });-->
+
+<!--        function scanQRCode() {-->
+<!--            context.drawImage(video, 0, 0, canvas.width, canvas.height);-->
+
+<!--            // Decode QR code from the captured image-->
+<!--            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);-->
+<!--            const code = jsQR(imageData.data, imageData.width, imageData.height);-->
+
+<!--            if (code) {-->
+<!--                const qrCodeData = code.data;-->
+
+<!--                // Compare the decoded QR code data with the usernames-->
+<!--                for (let i = 0; i < qrCodes.length; i++) {-->
+<!--                    const username = qrCodes[i].dataset.username;-->
+
+<!--                    if (qrCodeData === username) {-->
+<!--                        // Redirect to the success page if the QR code is valid-->
+<!--                        window.location.href = '/attendance-success/';-->
+<!--                        return;-->
+<!--                    }-->
+<!--                }-->
+
+<!--                console.error('Invalid QR code');-->
+<!--            } else {-->
+<!--                console.error('No QR code detected');-->
+<!--            }-->
+
+<!--            // Continue scanning for QR codes in a loop-->
+<!--            requestAnimationFrame(scanQRCode);-->
+<!--        }-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
