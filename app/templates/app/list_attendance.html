@@ -1,0 +1,268 @@
+{% extends 'main.html' %}
+{% load custom_filters %}
+    {% block content %}
+    <style>
+        /* Table container styles */
+    .table-container {
+        padding: 40px; /* Add desired padding value */
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Table styles */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border: 3px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    /* Add animation */
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    /* Apply animation to table rows */
+    tr {
+        animation: fade-in 0.5s ease-in-out;
+    }
+
+    /* Add box shadow and transition to cells */
+    td {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease-in-out;
+    }
+
+    /* Change box shadow on hover */
+    td:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+       .form-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-container p,
+    .form-container input,
+    .form-container select {
+        margin: 10px;
+        padding: 5px;
+        width: 200px;
+    }
+
+    .form-container input[type="submit"] {
+        margin: 10px;
+        padding: 5px;
+    }
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        /* Classroom list styles */
+        .classroom-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        .classroom-item {
+            flex-basis: calc(33.33% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            background-color: #f2f2f2;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        .classroom-item:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .classroom-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Attendance list styles */
+        h2 {
+            color: #333;
+            margin-top: 30px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .all-link {
+            display: block;
+            width: fit-content;
+            margin: 0 auto;
+            padding: 10px 20px;
+            text-align: center;
+            color: #fff;
+            background-color: #007bff;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .all-link:hover {
+            background-color: #0056b3;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px; /* Adjust the height as needed */
+}
+    </style>
+<br>
+<br>
+<br>
+<br>
+<body>
+    <div class="chart-container">
+  <canvas id="myChart"></canvas>
+</div>
+    <br>
+    <h1>List of Classrooms</h1>
+    <br>
+
+<div class="form-container">
+    <form method="get">
+        {% csrf_token %}
+        <input name="s" placeholder="search by name....">
+        <select name="filter">
+            <option value="">All</option>
+            <option value="present">Present</option>
+            <option value="absent">Absent</option>
+        </select>
+        <select onchange="window.location.href = this.value;">
+            <option value="{% url 'list_trainer_classroom' %}">All</option>
+            {% for classroom in classrooms %}
+                <option value="{% url 'list_trainer_classroom' %}?q={{classroom.name}}">{{ classroom.name }}</option>
+            {% empty %}
+                <option disabled>No classrooms available</option>
+            {% endfor %}
+        </select>
+        <input type="submit">
+    </form>
+</div>
+
+<h2 align="center">Attendance List</h2>
+ <div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Classroom</th>
+                <th>Attendee</th>
+                <th>Is Present</th>
+                <th>Check-in Time</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if request.GET.s  %}
+         {% for attendance in attendances1 %}
+            <tr>
+                <td>{{ attendance.classroom }}</td>
+                <td>{{ attendance.attendee }}</td>
+                <td>{{ attendance.is_present }}</td>
+                <td>{{ attendance.check_in_time }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">There is no attendance yet</td>
+            </tr>
+            {% endfor %}
+
+        {% else %}
+            {% for attendance in attendances %}
+            <tr>
+                <td>{{ attendance.classroom }}</td>
+                <td>{{ attendance.attendee }}</td>
+                <td>{{ attendance.is_present }}</td>
+                <td>{{ attendance.check_in_time }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">There is no attendance yet</td>
+            </tr>
+            {% endfor %}
+                {% endif %}
+        </tbody>
+    </table>
+ </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById('myChart');
+  const labels = ['Present', 'Absent'];
+  const data = [{{ present_count }}, {{ absent_count }}];
+  
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: '# of Attendees',
+        data: data,
+        backgroundColor: ['#00ff00', '#ff0000'], // Green for present, Red for absent
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+    {% endblock content %}

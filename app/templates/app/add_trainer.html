@@ -1,0 +1,121 @@
+{% extends 'main.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block content %}
+<style>
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: white;
+    }
+
+    form {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        width: 600px;
+        margin: auto;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .btn-primary {
+        display: inline-block;
+        padding: 8px 16px;
+        margin-right: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-primary:active {
+        background-color: #003d80;
+    }
+
+    .btn-primary:last-child {
+        margin-right: 0;
+    }
+</style>
+<br>
+<br>
+<br>
+<br>
+
+<div class="form-container">
+    <form method="post" action="{% url 'add_trainer' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="id_username">Username:</label>
+            {{ user_form.username }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_email">Email:</label>
+            {{ user_form.email }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_password1">Password:</label>
+            {{ user_form.password1 }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_password2">Confirm Password:</label>
+            {{ user_form.password2 }}
+        </div>
+
+        <div class="form-group">
+            {{ trainer_form.as_p }}
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Register</button>
+            <a href="{% url 'list_trainer' %}" class="btn btn-primary">Go back</a>
+        </div>
+    </form>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+{% for message in messages %}
+<p align="center">{{ message }}</p>
+{% endfor %}
+
+{% endblock content %}

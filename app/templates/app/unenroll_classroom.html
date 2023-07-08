@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        .delete-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+
+        .delete-container p {
+            margin-bottom: 20px;
+        }
+
+        .delete-container form {
+            display: inline-block;
+        }
+
+        .delete-container form input[type="submit"] {
+            padding: 8px 16px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .delete-container form input[type="submit"]:hover {
+            background-color: #c82333;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="delete-container">
+    <p>Are you sure you want to unenroll the classroom {{ classroom.name }}?</p>
+    <form method="post" action="">
+        {% csrf_token %}
+        <input type="submit" value="UNENROLL"/>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,281 @@
+{% extends 'main.html' %}
+{% load custom_filters %}
+{% load static %}
+    {% block content %}
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        /* .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 20px;
+        }
+
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .flex-item {
+            width: calc(33.33% - 20px);
+            box-sizing: border-box;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .flex-item p {
+            margin: 5px 0;
+        }
+
+        .flex-item img,
+        .flex-item video {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Clearfix for every third resource item */
+        /*.flex-item:nth-child(3n+1) {
+            clear: left;
+        } */
+
+        form{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+
+        form input{
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .element-card {
+            margin-bottom: 20px;
+            transform: scale(1);
+            transition: transform 0.3s ease;
+            border: 1px solid #ccc;
+            width: 100% !important;
+        }
+
+        .element-card:hover {
+            transform: scale(1.05);
+            border-color: #007bff;
+        }
+
+        .pdf-container {
+            height: auto;
+            /* Adjust height as needed */
+        }
+
+        .resource-container {
+            margin-bottom: 20px;
+            transform: scale(1);
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+    </style>
+    <title>OneSchool</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'fonts/icomoon/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet">
+    <link href="{% static 'css/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/owl.theme.default.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/owl.theme.default.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery.fancybox.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-datepicker.css' %}" rel="stylesheet">
+    <link href="{% static 'fonts/flaticon/font/flaticon.css' %}" rel="stylesheet">
+    <link href="{% static 'css/aos.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <script nonce="3729f697-0974-4ac6-adf8-74b39c6b0ca5">
+        (function (w, d) { !function (bg, bh, bi, bj) { bg[bi] = bg[bi] || {}; bg[bi].executed = []; bg.zaraz = { deferred: [], listeners: [] }; bg.zaraz.q = []; bg.zaraz._f = function (bk) { return function () { var bl = Array.prototype.slice.call(arguments); bg.zaraz.q.push({ m: bk, a: bl }) } }; for (const bm of ["track", "set", "debug"]) bg.zaraz[bm] = bg.zaraz._f(bm); bg.zaraz.init = () => { var bn = bh.getElementsByTagName(bj)[0], bo = bh.createElement(bj), bp = bh.getElementsByTagName("title")[0]; bp && (bg[bi].t = bh.getElementsByTagName("title")[0].text); bg[bi].x = Math.random(); bg[bi].w = bg.screen.width; bg[bi].h = bg.screen.height; bg[bi].j = bg.innerHeight; bg[bi].e = bg.innerWidth; bg[bi].l = bg.location.href; bg[bi].r = bh.referrer; bg[bi].k = bg.screen.colorDepth; bg[bi].n = bh.characterSet; bg[bi].o = (new Date).getTimezoneOffset(); if (bg.dataLayer) for (const bt of Object.entries(Object.entries(dataLayer).reduce(((bu, bv) => ({ ...bu[1], ...bv[1] }))))) zaraz.set(bt[0], bt[1], { scope: "page" }); bg[bi].q = []; for (; bg.zaraz.q.length;) { const bw = bg.zaraz.q.shift(); bg[bi].q.push(bw) } bo.defer = !0; for (const bx of [localStorage, sessionStorage]) Object.keys(bx || {}).filter((bz => bz.startsWith("_zaraz_"))).forEach((by => { try { bg[bi]["z_" + by.slice(7)] = JSON.parse(bx.getItem(by)) } catch { bg[bi]["z_" + by.slice(7)] = bx.getItem(by) } })); bo.referrerPolicy = "origin"; bo.src = "../../cdn-cgi/zaraz/sd0d9.js?z=" + btoa(encodeURIComponent(JSON.stringify(bg[bi]))); bn.parentNode.insertBefore(bo, bn) };["complete", "interactive"].includes(bh.readyState) ? zaraz.init() : bg.addEventListener("DOMContentLoaded", zaraz.init) }(w, d, "zarazData", "script"); })(window, document);
+
+
+    </script>
+<!-- <br>
+<br>
+<br>
+<br>
+<br>
+<br> -->
+<body>
+    <div class="intro-section single-cover" id="home-section">
+        <div class="slide-1 " data-stellar-background-ratio="0.5"
+            style="background-image: url('images/img_2.jpg');">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-12">
+                        <div class="row justify-content-center align-items-center text-center">
+                            <div class="col-lg-6">
+                                <h1 data-aos="fade-up" data-aos-delay="0">Classrooms</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br><br>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-12 align-items-center">
+                <form method="get" action="">
+                    <label for="search" style="color: black">Search for classrooms: </label>
+                    <input type="text" name="search" id="search" class="form-control"/>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </div>
+        <br><br>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="container">
+                    {% if error_message %}
+                        <p style="color: red;">{{ error_message }}</p>
+                    {% endif %}
+                    {% for classroom in classrooms %}
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card element-card">
+                                    <div class="card-header" id="heading{{ classroom.id }}">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h5 class="mb-0">
+                                                    <img src="{{ classroom.profile_pic.url }}" style="width: 100px; height: 100px;"/>
+                                                     {{ classroom.name }}
+                                                </h5>        
+                                            </div>
+                                            <div class="col" style="align-self: center; justify-self: center; margin-top: 13px;">
+                                                <p>Trainer: {{ classroom.trainer.name }}</p>
+                                            </div>
+                                            <div class="col text-right">
+                                                {% if request.user.attendee in classroom.attendees.all %}
+                                                    <p style="color:green;">Enrolled</p>
+                                                {% else %}
+                                                    <p style="color:red;">Not enrolled</p>
+                                                {% endif %}
+                                                <a href="{% url 'course_single' classroom.id %}" class="btn btn-primary">View details</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery-migrate-3.0.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.stellar.min.js' %}"></script>
+    <script src="{% static 'js/jquery.countdown.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+    <script src="{% static 'js/aos.js' %}"></script>
+    <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-23581568-13');
+
+
+
+    </script>
+    <script crossorigin="anonymous"
+        data-cf-beacon='{"rayId":"7cc681507fc11892","version":"2023.4.0","b":1,"token":"cd0b4b3a733644fc843ef0b185f98241","si":100}'
+        defer
+        integrity="sha512-jGCTpDpBAYDGNYR5ztKt4BQPGef1P0giN6ZGVUi835kFF88FOmmn8jBQWNgrNd8g/Yu421NdgWhwQoaOPFflDw=="
+        src="https://static.cloudflareinsights.com/beacon.min.js/v52afc6f149f6479b8c77fa569edb01181681764108816"></script>
+    <script>
+        $(document).ready(function () {
+            // Close button event handler
+            $('.close-btn').click(function () {
+                $(this).closest('.resource-container').hide();
+            });
+        });
+
+    </script>
+</body>
+<!-- <body>
+    <form method="post">
+        {% csrf_token %}
+        <label for="code">Enter Classroom Code:</label>
+        <input type="text" name="code" id="code">
+        <input type="submit" value="Join Classroom">
+    </form>
+    <div class="grid-container">
+        <div>
+            <h2>Joined Classrooms:</h2>
+            <ul>
+                {% for joined_classroom in joined_classrooms %}
+                    <li>
+                        <a href="{% url 'join_classroom' %}?code={{ joined_classroom.code }}">
+                            {{ joined_classroom.name }}
+                        </a>
+                    </li>
+                {% empty %}
+                    <li>No classrooms joined yet.</li>
+                {% endfor %}
+            </ul>
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        <div>
+            {% if selected_classroom %}
+                <h2>Classroom: {{ selected_classroom.name }}</h2>
+            {% else %}
+                <p>No classroom selected.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if selected_classroom %}
+        <h3>Resources:</h3>
+        <div class="flex-container">
+            {% for resource in selected_classroom.resources.all %}
+                <div class="flex-item">
+                    <strong>{{ resource.title }}</strong>
+                    <i>{{ resource.created|timesince }} ago</i><br>
+                    {% if '.mp4' in resource.file.url %}
+                        <video width="100%" controls>
+                            <source src="{{ resource.file.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% elif '.pdf' in resource.file.url %}
+                        <a href="{{ resource.file.url }}" target="_blank"><img src="\images\pdf.png" width="100%"></a>
+                    {% elif resource.file.url|lower|endswith:'.jpg' or resource.file.url|lower|endswith:'.png' or resource.file.url|lower|endswith:'.jpeg' %}
+                        <img src="{{ resource.file.url }}" alt="{{ resource.title }}" width="100%">
+                    {% else %}
+                        <a href="{{ resource.file.url }}">{{ resource.title }}</a>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p>No resources available.</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+</body> -->
+
+    {% endblock content %}
